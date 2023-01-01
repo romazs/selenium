@@ -1,0 +1,363 @@
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import Select
+import pytest
+
+
+@pytest.fixture()
+def setup():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.get("https://svburger1.co.il/#/HomePage")
+    driver.implicitly_wait(5)
+    driver.maximize_window()
+    yield driver
+    driver.close()
+
+
+def test_sanity(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Reserve "]').click()
+    time.sleep(2)
+    driver.execute_script("scrollBy(0,-500);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Send"]').click()
+    assert driver.find_element(By.XPATH, '//h1[text()="SVBurger Summary"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_up_first_name_seven(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Avraham")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romann")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman001@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("1256rom!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("1256rom!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_up_last_name_seven(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Romann")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romaaan")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman002@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("123rom!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("123rom!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_up_password_ten_chars(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Romaaan")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Kharik")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman003@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("a12345677!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("a12345677!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_up_with_yahoo(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Romaaan")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romans")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman004@yahoo.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("1234rom")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("1234rom")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_up_only_required_fields(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman005@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("roman12!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("roman12!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+    #Failed - doesn't allow sign up with required fields only
+
+
+time.sleep(5)
+
+
+def test_eh_sign_up_first_name_hebrew(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("רומן")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romannn")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman006@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("ab34567!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("ab34567!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    time.sleep(5)
+    alert = driver.switch_to.alert  # switch to alert
+    assert "First name must be in English letters only" in alert.text
+    alert.accept()  # click on OK button
+
+
+time.sleep(5)
+
+
+def test_eh_sign_up_last_name_hebrew(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Romann")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("חריקק")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman007@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("a234507!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("a234507!")
+    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+    time.sleep(5)
+    alert = driver.switch_to.alert  # switch to alert
+    assert "Last name must be in English letters only" in alert.text
+    alert.accept()  # click on OK button
+
+
+time.sleep(5)
+
+
+def test_sign_in_with_yahoo(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("romkhr@yahoo.com")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rmn#1234")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_in_with_walla(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_click_forgot_password(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//a[@id="forgotId"]').click()
+    assert driver.find_element(By.XPATH, '//button[text()="Reset Password"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_sign_in_password_ten_chars(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman003@gmail.com")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("a12345677!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+    # connected to sign_up_password_ten_chars
+
+
+time.sleep(5)
+
+
+def test_eh_sign_in_with_wrong_password(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom122!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    time.sleep(5)
+    alert = driver.switch_to.alert  # switch to alert
+    assert "Failed to log in" in alert.text
+    alert.accept()  # click on OK button
+
+
+time.sleep(5)
+
+
+def test_eh_sign_in_without_email(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    time.sleep(5)
+    alert = driver.switch_to.alert  # switch to alert
+    assert "Failed to log in" in alert.text
+    alert.accept()  # click on OK button
+
+
+time.sleep(5)
+
+
+def test_orders_order_two_meals(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Kids Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Reserve "]').click()
+    time.sleep(2)
+    driver.execute_script("scrollBy(0,-500);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Send"]').click()
+    time.sleep(2)
+    assert driver.find_element(By.XPATH, '//h1[text()="SVBurger Summary"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_orders_select_meal_twice_unselect(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    time.sleep(3)
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    time.sleep(3)
+    assert driver.find_element(By.XPATH, '(//div[@style="background-color: white; max-width: 540px; margin-left: auto; margin-right: auto;"])[1]')
+
+
+time.sleep(5)
+
+
+def test_orders_log_out_button(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Log out "]').click()
+    time.sleep(2)
+    assert driver.find_element(By.XPATH, '//button[text()="Sign In"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_orders_cancel_order(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Reserve "]').click()
+    time.sleep(2)
+    driver.execute_script("scrollBy(0,-500);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Send"]').click()
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Cancel"]').click()
+    time.sleep(2)
+    assert driver.find_element(By.XPATH, '//button[text()="Send"]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_orders_click_back_to_menu_button(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Reserve "]').click()
+    driver.execute_script("scrollBy(0,-500);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Back To Menu"]').click()
+    assert driver.find_element(By.XPATH, '//button[text()=" Reserve "]').is_displayed()
+
+
+time.sleep(5)
+
+
+def test_eh_orders_select_four_meals(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Kids Meal"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Burger"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
+    driver.find_element(By.XPATH, '//img[@src="https://st2.depositphotos.com/5739646/11444/v/950/depositphotos_114446306-stock-illustration-kids-restaurant-menu-cardboard-character.jpg"]').click()
+    time.sleep(3)
+    assert driver.find_element(By.XPATH, '(//div[@style="background-color: white; max-width: 540px; margin-left: auto; margin-right: auto;"])[2]')
+    # Failed: 4 meals selected
+
+
+time.sleep(5)
+
+
+def test_eh_orders_quantity_13(setup):
+    driver = setup
+    driver.find_element(By.XPATH, '//button[text()="Sign In"]').click()
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("rom388@walla.co.il")
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your password"]').send_keys("rom125!")
+    driver.find_element(By.XPATH, '//button[text()="Sign in"]').click()
+    driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()=" Reserve "]').click()
+    time.sleep(2)
+    driver.execute_script("scrollBy(0,-500);")
+    driver.find_element(By.XPATH, '//input[@type="number"]').send_keys("3")
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[text()="Send"]').click()
+    time.sleep(2)
+    alert = driver.switch_to.alert  # switch to alert
+    assert "Invalid value in quantity" in alert.text
+    alert.accept()
