@@ -38,31 +38,21 @@ def test_sanity(setup):
 time.sleep(5)
 
 
-def test_sign_up_first_name_seven(setup):
+first_last_name_seven = [["Sevennn", "Aaaa", "test223344@walla.co.il", "rom0123"], ["Aaaa", "Sevennn", "test332255@gmail.com", "mor3210"]]
+
+
+@pytest.mark.parametrize("users", first_last_name_seven)
+def test_sign_up(setup, users):
     driver = setup
     driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
-    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Avraham")
-    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romann")
-    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman001@gmail.com")
-    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("1256rom!")
-    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("1256rom!")
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys(users[0])
+    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys(users[1])
+    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys(users[2])
+    driver.find_element(By.XPATH, '//input[@placeholder="Create Password"]').send_keys(users[3])
+    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys(users[3])
     driver.find_element(By.XPATH, '//button[@type="submit"]').click()
-    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
-
-
-time.sleep(5)
-
-
-def test_sign_up_last_name_seven(setup):
-    driver = setup
-    driver.find_element(By.XPATH, '//button[text()="Sign Up"]').click()
-    driver.find_element(By.XPATH, '//input[@placeholder="Type your first name"]').send_keys("Romann")
-    driver.find_element(By.XPATH, '//input[@placeholder="Type your last name"]').send_keys("Romaaan")
-    driver.find_element(By.XPATH, '//input[@placeholder="Enter your email"]').send_keys("roman002@gmail.com")
-    driver.find_element(By.XPATH, '//input[@placeholder = "Create Password"]').send_keys("123rom!")
-    driver.find_element(By.XPATH, '//input[@placeholder="Confirm Password"]').send_keys("123rom!")
-    driver.find_element(By.XPATH, '//button[@type="submit"]').click()
-    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed()
+    assert driver.find_element(By.XPATH, '//h5[text()="Combo Meal"]').is_displayed() 
+    #Sign up: first name 7 chars and last name 7 chars. walla and gmail.
 
 
 time.sleep(5)
